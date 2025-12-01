@@ -115,6 +115,26 @@ def criar_habito():
     return render_template("criar_habito.html")
 
 
+@app.route("/habitos")
+def habitos():
+    if "usuario_id" not in session:
+        return redirect("/login")
+
+    conn = conectar_banco()
+    cursor = conn.cursor()
+
+    cursor.execute("""
+        SELECT id, titulo, descricao
+        FROM habitos
+        WHERE usuario_id = ?
+    """, (session["usuario_id"],))
+
+    lista = cursor.fetchall()
+    conn.close()
+
+    return render_template("habitos.html", habitos=lista)
+
+
 @app.route("/logout")
 def logout():
     session.clear()

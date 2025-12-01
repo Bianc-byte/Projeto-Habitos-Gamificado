@@ -1,19 +1,22 @@
 {% extends "base.html" %}
 
-{% block title %}Meus Há<bitos>% endbock %</bitos>
+{% block title %}Meus Hábitos{% endblock %}
 
 {% block content %}
 <h1>Meus Hábitos</h1>
 
-<a href=""/novo_habito">+ Criar novo hábito</a>
-
+<a href="/novo_habito">+ Criar novo hábito</a>
 <ul>
     {% for h in habitos %}
         <li>
-            <strong>{{ h1] }}</strong><br>
+            <strong>{{ h[1] }}</strong><br>
             {{ h[2] }}
+            <br>
+
+            <a href="/editar_habito/{{ h[0] }}">Editar</a> |
+            <a href="/deletar_habito/{{ h[0] }}" onclick="return confirm('Tem certeza?')">Excluir</a>
         </li>
     {% else %}
-        <p>Nenhum hábito cadastrado ainda.</p>
+        <p>Nenhum hábito criado ainda.</p>
     {% endfor %}
 </ul>
