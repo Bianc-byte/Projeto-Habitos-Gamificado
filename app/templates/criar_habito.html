@@ -1,0 +1,23 @@
+{% extends "base.html" %}
+
+{% block title %}Criar Hábito{% endblock %}
+
+{% block content %}
+<h2>Criar Novo Hábito</h2>
+
+{% if mensagem %}
+<p style="color: green;">{{ mensagem }}</p>
+{% endif %}
+
+<form method="POST">
+    <label>Título:</label><br>
+    <input type="text" name="titulo" required><br><br>
+
+    <label>Descrição:</label><br>
+    <textarea name="descricao"></textarea><br><br>
+
+    <button type="submit">Salvar Hábito</button>
+</form>
+
+<a href="/dashboard">Voltar</a>
+{% endblock %}

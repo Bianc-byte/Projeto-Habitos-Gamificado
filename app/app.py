@@ -89,31 +89,33 @@ def dashboard():
     return render_template("dashboard.html", nome=session["usuario_nome"], habitos=habitos)
 
 
-@app.route("/novo_habito", methods=["GET", "POST"])
-def novo_habito():
+@app.route("/criar_habito", methods=["GET", "POST"])
+def criar_habito():
     if "usuario_id" not in session:
         return redirect("/login")
 
     if request.method == "POST":
         titulo = request.form["titulo"]
-        descricao = request.form.get("descricao", "")
+        descricao = request.form["descricao"]
+        usuario_id = session["usuario_id"]
 
         conn = conectar_banco()
         cursor = conn.cursor()
 
         cursor.execute("""
-            INSERT INTO habitos (usuario_id, titulo, desscricao)
+            INSERT INTO habitos (usuario_id, titulo, descricao)
             VALUES (?, ?, ?)
-        """, (session["usuario_id"], titulo, descricao)
+        """, (usuario_id, titulo, descricao))
 
-    conn.commit()
-    conn.close()
+        conn.commit()
+        conn.close()
 
-    return redirect("/dashboard")
+        return render_template("criar_habito.html", mensagem="Hábito criado com sucesso!")
 
-return render_template("novo_habito.html")
+    return render_template("criar_habito.html")
 
-@ app.route("/logout")
+
+@app.route("/logout")
 def logout():
     session.clear()
     return redirect("/")
