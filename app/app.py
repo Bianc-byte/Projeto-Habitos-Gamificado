@@ -8,8 +8,8 @@ app = Flask(__name__)
 
 
 def conectar_banco():
-    caminho = os.path.join(os.path.dirname(__file), "database", "habitos.db")
-    return sqlite3.connect(caminho)
+    caminho = os.path.join(os.path.dirname(__file__), "database", "habitos.db")
+    return sqlite3.connect(caminho, timeout=10, check_same_thread=False)
 
 
 @app.route("/")
@@ -27,7 +27,7 @@ def login():
         cursor = conn.cursor()
 
         cursor.execute("""
-            SELECT * FROM usuarios WHERE email = ? AND senha = ?)
+            SELECT * FROM usuarios WHERE email = ? AND senha = ?
             """, (email, senha))
 
         usuario = cursor.fetchone()
@@ -57,13 +57,17 @@ def cadastro():
             """, (nome, email, senha))
 
             conn.commit()
-            conn.close()
-
-            return render_template("cadastro.html", mensagem="Conta criada com sucesso!")
+            mensagem = "Conta criada com sucesso!"
 
         except sqlite3.IntegrityError:
-            return render_template("cadastro..html", mensagem="Email já está cadastrado!")
-        return render_template("cadastro.html")
+            mensagem = "Email já está cadastrado!"
+
+        finally:
+            conn.close()
+
+        return render_template("cadastro.html", mensagem=mensagem)
+
+    return render_template("cadastro.html")
 
 
 @app.route("/dashboard")
