@@ -1,21 +1,8 @@
 {% extends "base.html" %}
 
-{% block title %}Dashboard{% endblock %}
-
 {% block content %}
-<h1>Bem-vindo(a), {{ nome }}!</h1>
-<h2>Seus Hábitos</h2>
+<h1>Bem-vindo, {{ nome }}!</h1>
 
-<ul>
-    {% for h in habitos %}
-    <li><strong>{{ h[0] }}</strong> - {{ h[1] }}</li>
-    {% else %}
-        <p>Nenhum hábito cadastrado ainda.</p>
-    {% endfor %}
-</ul>
-
-<a href="/novo_habito">+ Adicionar novo hábito</a>
-
-<br><br>
+<a href="/habitos">Ver meus hábitos</a><br>
 <a href="/logout">Sair</a>
 {% endblock %}

@@ -1,0 +1,19 @@
+{% extends "base.html" %}
+
+{% block title %}Meus Há<bitos>% endbock %</bitos>
+
+{% block content %}
+<h1>Meus Hábitos</h1>
+
+<a href=""/novo_habito">+ Criar novo hábito</a>
+
+<ul>
+    {% for h in habitos %}
+        <li>
+            <strong>{{ h1] }}</strong><br>
+            {{ h[2] }}
+        </li>
+    {% else %}
+        <p>Nenhum hábito cadastrado ainda.</p>
+    {% endfor %}
+</ul>
