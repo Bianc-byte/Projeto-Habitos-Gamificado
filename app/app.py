@@ -17,14 +17,53 @@ def index():
     return render_template("index.html")
 
 
-@app.route("/login")
+@app.route("/login", methods=["GET", "POST"])
 def login():
+    if request.method == "POST":
+        email = request.form["email"]
+        senha = request.form["senha"]
+
+        conn = conectar_banco()
+        cursor = conn.cursor()
+
+        cursor.execute("""
+            SELECT * FROM usuarios WHERE email = ? AND senha = ?)
+            """, (email, senha))
+
+        usuario = cursor.fetchone()
+        conn.close()
+
+        if usuario:
+            return render_template("login.html", mensagem="Login realizado com sucesso!")
+        else:
+            return render_template("login.html", mensagem="Email ou senha incorretos!")
     return render_template("login.html")
 
 
-@app.route("/cadastro")
+@app.route("/cadastro", methods=["GET", "POST"])
 def cadastro():
-    return render_template("cadastro.html")
+    if request.method == "POST":
+        nome = request.form["nome"]
+        email = request.form["email"]
+        senha = request.form["senha"]
+
+        conn = conectar_banco()
+        cursor = conn.cursor()
+
+        try:
+            cursor.execute("""
+                INSERT INTO usuarios (nome, email, senha)
+                VALUES (?, ?, ?)
+            """, (nome, email, senha))
+
+            conn.commit()
+            conn.close()
+
+            return render_template("cadastro.html", mensagem="Conta criada com sucesso!")
+
+        except sqlite3.IntegrityError:
+            return render_template("cadastro..html", mensagem="Email já está cadastrado!")
+        return render_template("cadastro.html")
 
 
 @app.route("/dashboard")
