@@ -1,7 +1,15 @@
 
-from flask import Flask, render_template
+from flask import Flask, render_template, request
+import os
+import sqlite3
+
 
 app = Flask(__name__)
+
+
+def conectar_banco():
+    caminho = os.path.join(os.path.dirname(__file), "database", "habitos.db")
+    return sqlite3.connect(caminho)
 
 
 @app.route("/")
