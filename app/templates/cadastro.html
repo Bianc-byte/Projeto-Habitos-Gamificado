@@ -1,8 +1,23 @@
 {% extends "base.html" %}
-
 {% block title %}Cadastro{% endblock %}
 
 {% block content %}
-<h1>Tela de Cadastro</h1>
-<p>Aqui vai ficar o formulário de criar conta</p>
+<h1>Criar Conta</h1>
+
+<form method="POST" action="/cadastro">
+    <label>Nome:</label><br>
+    <input type="text" name="nome" required><br><br>
+
+    <label>Email:</label><br>
+    <input type="email" name="email" required><br><br>
+    
+    <label>Senha:</label><br>
+    <input type="password" name="senha" required><br><br>
+
+    <button type="submit">Cadastrar</button>
+</form>
+{% if mensagem %}
+    <p>{{ mensagem }}</p>
+{% endif %}
+
 {% endblock %}
