@@ -89,7 +89,31 @@ def dashboard():
     return render_template("dashboard.html", nome=session["usuario_nome"], habitos=habitos)
 
 
-@app.route("/logout")
+@app.route("/novo_habito", methods=["GET", "POST"])
+def novo_habito():
+    if "usuario_id" not in session:
+        return redirect("/login")
+
+    if request.method == "POST":
+        titulo = request.form["titulo"]
+        descricao = request.form.get("descricao", "")
+
+        conn = conectar_banco()
+        cursor = conn.cursor()
+
+        cursor.execute("""
+            INSERT INTO habitos (usuario_id, titulo, desscricao)
+            VALUES (?, ?, ?)
+        """, (session["usuario_id"], titulo, descricao)
+
+    conn.commit()
+    conn.close()
+
+    return redirect("/dashboard")
+
+return render_template("novo_habito.html")
+
+@ app.route("/logout")
 def logout():
     session.clear()
     return redirect("/")
