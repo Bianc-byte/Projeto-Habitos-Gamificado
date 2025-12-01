@@ -1,10 +1,12 @@
 
-from flask import Flask, render_template, request
+from flask import Flask, render_template, request, session, redirect
 import os
 import sqlite3
 
 
 app = Flask(__name__)
+
+app.secret_key = "linkin_park_secret_key"
 
 
 def conectar_banco():
@@ -34,7 +36,9 @@ def login():
         conn.close()
 
         if usuario:
-            return render_template("login.html", mensagem="Login realizado com sucesso!")
+            session["usuario_id"] = usuario[0]
+            session["usuario_nome"] = usuario[1]
+            return redirect("/dashboard")
         else:
             return render_template("login.html", mensagem="Email ou senha incorretos!")
     return render_template("login.html")
@@ -72,7 +76,23 @@ def cadastro():
 
 @app.route("/dashboard")
 def dashboard():
-    return render_template("dashboard.html")
+    if "usuario_id" not in session:
+        return redirect("/login")
+
+    conn = conectar_banco()
+    cursor = conn.cursor()
+    cursor.execute("SELECT nome FROM usuarios WHERE id = ?",
+                   (session["usuario_id"],))
+    habitos = cursor.fetchall()
+    conn.close()
+
+    return render_template("dashboard.html", nome=session["usuario_nome"], habitos=habitos)
+
+
+@app.route("/logout")
+def logout():
+    session.clear()
+    return redirect("/")
 
 
 if __name__ == "__main__":
