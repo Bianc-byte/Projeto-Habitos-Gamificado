@@ -20,10 +20,10 @@ def calcular_streak(usuario_id, habito_id):
     cursor = conn.cursor()
 
     cursor.execute("""
-        SELECT data_conclusao
+        SELECT data
         FROM progresso_diario
         WHERE usuario_id = ? AND habito_id = ?
-        ORDER BY data_conclusao DESC
+        ORDER BY data DESC
     """, (usuario_id, habito_id))
 
     datas = [row[0] for row in cursor.fetchall()]
@@ -186,7 +186,7 @@ def habitos():
         streak = calcular_streak(session["usuario_id"], h[0])
         habitos_completos.append((h[0], h[1], h[2], streak))
 
-    return render_template("habitos.html", habitos=lista)
+    return render_template("habitos.html", habitos=habitos_completos)
 
 
 @app.route("/editar/<int:id>", methods=["GET", "POST"])
