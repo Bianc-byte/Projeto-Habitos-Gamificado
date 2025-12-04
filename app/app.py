@@ -2,6 +2,7 @@
 from flask import Flask, render_template, request, session, redirect
 import os
 import sqlite3
+from datetime import date
 
 
 app = Flask(__name__)
@@ -204,6 +205,29 @@ def deletar_habito(id):
     conn.close()
 
     return redirect("/habitos")
+
+
+@app.route("/marcar/<int:habito_id>")
+def marcar_habito(habito_id):
+    if "usuario_id" not in session:
+        return redirect("/login")
+
+    usuario_id = session["usuario_id"]
+    hoje = date.today().isoformat()
+
+    conn = conectar_banco()
+    cursor = conn.cursor()
+
+    cursor.execute("""
+        SELECT id FROM progresso_diario
+        WHERE usuario_id = ? AND habito_id = ? AND data = ?
+    """, (usuario_id, habito_id, hoje))
+
+    registro = cursor.fetchone()
+
+    if registro:
+        conn.close()
+        return redirect("/habitos")
 
 
 @app.route("/logout")
