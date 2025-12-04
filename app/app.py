@@ -81,12 +81,29 @@ def dashboard():
 
     conn = conectar_banco()
     cursor = conn.cursor()
-    cursor.execute("SELECT nome FROM usuarios WHERE id = ?",
-                   (session["usuario_id"],))
-    habitos = cursor.fetchall()
+
+    cursor.execute("""
+        SELECT id, titulo, descricao
+        FROM habitos
+        WHERE usuario_id = ?
+        ORDER BY id DESC
+        LIMIT 5
+    """, (session["usuario_id"],))
+    habitos_recentes = cursor.fetchall()
+
+    cursor.execute("""
+        SELECT COUNT(*) FROM habitos WHERE usuario_id = ?
+    """, (session["usuario_id"],))
+    total_habitos = cursor.fetchone()[0]
+
     conn.close()
 
-    return render_template("dashboard.html", nome=session["usuario_nome"], habitos=habitos)
+    return render_template(
+        "dashboard.html",
+        nome=session["usuario_nome"],
+        habitos=habitos_recentes,
+        total_habitos=total_habitos
+    )
 
 
 @app.route("/criar_habito", methods=["GET", "POST"])
@@ -110,8 +127,7 @@ def criar_habito():
         conn.commit()
         conn.close()
 
-        return render_template("criar_habito.html", mensagem="Hábito criado com sucesso!")
-
+        return redirect("/habitos")
     return render_template("criar_habito.html")
 
 
@@ -133,6 +149,61 @@ def habitos():
     conn.close()
 
     return render_template("habitos.html", habitos=lista)
+
+
+@app.route("/editar/<int:id>", methods=["GET", "POST"])
+def editar_habito(id):
+    if "usuario_id" not in session:
+        return redirect("/login")
+
+    conn = conectar_banco()
+    cursor = conn.cursor()
+
+    if request.method == "POST":
+        titulo = request.form["titulo"]
+        descricao = request.form["descricao"]
+
+        cursor.execute("""
+            UPDATE habitos
+            SET titulo = ?, descricao = ?
+            WHERE id = ? AND usuario_id = ?
+        """, (titulo, descricao, id, session["usuario_id"]))
+
+        conn.commit()
+        conn.close()
+
+        return redirect("/habitos")
+
+    # GET — pegar hábito existente
+    cursor.execute("""
+        SELECT id, titulo, descricao
+        FROM habitos
+        WHERE id = ? AND usuario_id = ?
+    """, (id, session["usuario_id"]))
+
+    habito = cursor.fetchone()
+    conn.close()
+
+    return render_template("editar_habito.html", habito=habito)
+
+
+@app.route("/deletar_habito/<int:id>")
+def deletar_habito(id):
+    if "usuario_id" not in session:
+        return redirect("/login")
+
+    conn = conectar_banco()
+    cursor = conn.cursor()
+
+    cursor.execute("""
+        DELETE FROM habitos
+        WHERE id = ? AND usuario_id = ?
+    """, (id, session["usuario_id"]))
+
+    conn.commit()
+    conn.close()
+
+    return redirect("/habitos")
 
 
 @app.route("/logout")

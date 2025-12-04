@@ -1,19 +1,19 @@
 {% extends "base.html" %}
 
-{% block title %}Editar Hábito{% endblock %} 
+{% block title %}Editar Hábito{% endblock %}
 
 {% block content %}
 <h1>Editar Hábito</h1>
 
 <form method="POST">
-    <label>Título:</label>
-    <input type="text" name="titulo" value="{{ habito[1] }}" required>
-    
-    <label>Descrição:</label>
-    <textarea name="descricao" required>{{ habito[2] }}</textarea>
+    <label>Título:</label><br>
+    <input type="text" name="titulo" value="{{ habito[1] }}" required><br><br>
+
+    <label>Descrição:</label><br>
+    <textarea name="descricao" required>{{ habito[2] }}</textarea><br><br>
+
+    <button type="submit">Salvar alterações</button>
 </form>
 
 <a href="/habitos">Voltar</a>
-
 {% endblock %}
-
