@@ -5,15 +5,18 @@
 {% block content %}
 <h1>Meus Hábitos</h1>
 
-<a href="/criar_habito">+ Criar novo hábito</a>
+<a href="/criar_habito" class="btn-criar">+Criar novo hábito</a>
 
-<ul>
+<ul class=""lista-habitos">
     {% for h in habitos %}
-        <li>
+        <li class="habito-item">
             <strong>{{ h[1] }}</strong><br>
             {{ h[2] }}<br><br>
 
-            <a href="/marcar/{{ h[0] }}">✔ Marcar como feito hoje</a>"
+            <p>🔥 Streak: {{ h[3] }} dias</p>
+
+            <a href="/marcar/{{ h[0] }}" class="btn-marcar">✔ Marcar como feito hoje</a>"
+            <br><br>
             <a href="/editar/{{ h[0] }}">Editar</a> |
             <a href="/deletar_habito/{{ h[0] }}" onclick="return confirm('Tem certeza?')">Excluir</a>
         </li>

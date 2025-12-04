@@ -181,6 +181,11 @@ def habitos():
     lista = cursor.fetchall()
     conn.close()
 
+    habitos_completos = []
+    for h in lista:
+        streak = calcular_streak(session["usuario_id"], h[0])
+        habitos_completos.append((h[0], h[1], h[2], streak))
+
     return render_template("habitos.html", habitos=lista)
 
 
