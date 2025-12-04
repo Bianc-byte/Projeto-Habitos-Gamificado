@@ -15,6 +15,38 @@ def conectar_banco():
     return sqlite3.connect(caminho, timeout=10, check_same_thread=False)
 
 
+def calcular_streak(usuario_id, habito_id):
+    conn = conectar_banco()
+    cursor = conn.cursor()
+
+    cursor.execute("""
+        SELECT data_conclusao
+        FROM progresso_diario
+        WHERE usuario_id = ? AND habito_id = ?
+        ORDER BY data_conclusao DESC
+    """, (usuario_id, habito_id))
+
+    datas = [row[0] for row in cursor.fetchall()]
+    conn.close()
+
+    if not datas:
+        return 0
+
+    streak = 1
+    hoje = date.today()
+
+    for data_str in datas[1:]:
+        dia = date.fromisoformat(data_str)
+        anterior = hoje.fromordinal(hoje.toordinal() - streak)
+
+        if dia == anterior:
+            streak += 1
+        else:
+            break
+
+    return streak
+
+
 @app.route("/")
 def index():
     return render_template("index.html")
@@ -228,6 +260,16 @@ def marcar_habito(habito_id):
     if registro:
         conn.close()
         return redirect("/habitos")
+
+    cursor.execute("""
+        INSERT INTO progresso_diario (usuario_id, habito_id, data)
+        VALUES (?, ?, ?)
+    """, (usuario_id, habito_id, hoje))
+
+    conn.commit()
+    conn.close()
+
+    return redirect("/habitos")
 
 
 @app.route("/logout")

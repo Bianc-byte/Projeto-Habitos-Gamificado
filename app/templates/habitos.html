@@ -11,8 +11,9 @@
     {% for h in habitos %}
         <li>
             <strong>{{ h[1] }}</strong><br>
-            {{ h[2] }}
-            <br>
+            {{ h[2] }}<br><br>
+
+            <a href="/marcar/{{ h[0] }}">✔ Marcar como feito hoje</a>"
             <a href="/editar/{{ h[0] }}">Editar</a> |
             <a href="/deletar_habito/{{ h[0] }}" onclick="return confirm('Tem certeza?')">Excluir</a>
         </li>
