@@ -1,29 +1,26 @@
-{% extends "base.html" %}
 
-{% block title %}Meus Hábitos{% endblock %}
+{% extends "base.html" %}
 
 {% block content %}
 <h1>Meus Hábitos</h1>
 
-<a href="/criar_habito" class="btn-criar">+Criar novo hábito</a>
+<a class="btn" href="/criar_habito">+ Criar novo hábito</a>
 
-<ul class=""lista-habitos">
+<ul class="lista-habitos">
     {% for h in habitos %}
         <li class="habito-item">
             <strong>{{ h[1] }}</strong><br>
-            {{ h[2] }}<br><br>
+            <small>{{ h[2] }}</small><br><br>
 
-            <p>🔥 Streak: {{ h[3] }} dias</p>
+            {% if h[3] == 1 %}
+                <p class="feito-hoje">✔ Feito hoje</p>
+            {% endif %}
 
-            <a href="/marcar/{{ h[0] }}" class="btn-marcar">✔ Marcar como feito hoje</a>
-            <br><br>
-            <a href="/editar/{{ h[0] }}">Editar</a> |
-            <a href="/deletar_habito/{{ h[0] }}" onclick="return confirm('Tem certeza?')">Excluir</a>
+            <a class="btn" href="/marcar/{{ h[0] }}">Marcar como feito</a>
+            <a class="btn editar" href="/editar/{{ h[0] }}">Editar</a>
+            <a class="btn deletar" href="/deletar_habito/{{ h[0] }}">Excluir</a>
         </li>
-    {% else %}
-        <p>Nenhum hábito criado ainda.</p>
     {% endfor %}
 </ul>
-
 {% endblock %}
 
