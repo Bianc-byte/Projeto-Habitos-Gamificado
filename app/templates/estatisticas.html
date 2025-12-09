@@ -1,0 +1,33 @@
+{% extends "base.html" %}
+
+{% block content %}
+<h1>📊 Estatísticas</h1>
+
+<div class="habito-item">
+    <p><strong>Total de Hábitos:</strong>{{ total_habitos }}</p>
+    <p><strong>Total de Conclusões:</strong>{{ total_conclusoes }}</p>
+    <p><strong>Melhor Streak:</strong>{{ melhor_streak }} dias</p>
+</div>
+<h2>Gráfico de Conclusões</h2>
+
+<canvas id="grafico_conclusoes" width="300" height="100"></canvas>
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+<script>
+    const ctx = document.getElementById("grafico_conclusoes");
+
+    new Chart(ctx, {
+        type: "line",
+        data: {
+            labels: ["Dom", "Seg", "Ter", "Qua", "Qui", "Sex", "Sáb"],
+            datasets: [{
+                label: "Hábitos concluídos",
+                data: [3, 4,, 2, 6, 5, 4, 7],
+                borderWidth: 2
+            }]
+        }
+    });
+</script>
+
+{% endblock %}
